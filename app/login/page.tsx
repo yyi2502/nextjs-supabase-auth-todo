@@ -52,7 +52,7 @@ export default function Login() {
 
         toast.success("ログインしました");
 
-        router.push("/");
+        router.replace("/");
         router.refresh();
       } catch (error) {
         console.error(error);
