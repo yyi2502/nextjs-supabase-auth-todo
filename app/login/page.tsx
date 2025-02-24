@@ -51,14 +51,14 @@ export default function Login() {
         }
 
         toast.success("ログインしました");
+
+        router.push("/");
+        router.refresh();
       } catch (error) {
         console.error(error);
         setError("エラーが発生しました");
       }
     });
-
-    router.replace("/");
-    router.refresh();
   };
   return (
     <div className="p-5 rounded-xl border">
