@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
-// import { useRouter } from "next/navigation";
+import { useCallback, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,11 +22,11 @@ import { ChevronRight, EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
 import FormError from "@/components/auth/FormError";
 
 export default function Login() {
-  // const router = useRouter();
+  const router = useRouter();
   const [error, setError] = useState("");
   const [passwordVisibility, setPasswordVisibility] = useState(false);
-  // const [isPending, startTransition] = useTransition();
-  const [isPending, setIsPending] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  // const [isPending, setIsPending] = useState(false);
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -36,44 +36,36 @@ export default function Login() {
     },
   });
 
-  // 送信
-  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
-    setIsPending(true);
+  // useCallbackを使用してメモ化
+  const handleNavigation = useCallback(() => {
+    router.push("/");
+    const timeoutId = setTimeout(() => {
+      router.refresh();
+    }, 500);
+    // クリーンアップ関数を返す
+    return () => clearTimeout(timeoutId);
+  }, [router]);
+
+  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
-
-    // startTransition(async () => {
-    try {
-      const res = await login({
-        ...values,
-      });
-
-      if (res?.error) {
-        setError(res.error);
-        return;
+    startTransition(async () => {
+      try {
+        const res = await login({
+          ...values,
+        });
+        if (res?.error) {
+          setError(res.error);
+          return;
+        }
+        toast.success("ログインしました");
+        handleNavigation();
+      } catch (error) {
+        console.error(error);
+        setError("エラーが発生しました");
       }
-
-      toast.success("ログインしました");
-
-      setIsPending(false);
-      // router.push("/");
-      // setTimeout(() => {
-      //   router.refresh();
-      // }, 3000); // 3000ms 後に refresh
-
-      // router.push("/").then(() => {
-      //   router.refresh();
-      // });
-
-      // router.push("/"); // router.push の完了を待つ
-      // router.refresh(); // ページ遷移完了後にリフレッシュ
-
-      window.location.href = "/"; //強制遷移
-    } catch (error) {
-      console.error(error);
-      setError("エラーが発生しました");
-    }
-    // });
+    });
   };
+
   return (
     <div className="p-5 rounded-xl border">
       <div className="text-xl font-bold text-center border-b border-black pb-5 mb-5 mt-3">
