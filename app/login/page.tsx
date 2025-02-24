@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useCallback, useEffect, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,13 +36,14 @@ export default function Login() {
     },
   });
 
+  const pathname = usePathname(); // 現在のパスを取得
   // useCallbackを使用してメモ化
-  const handleNavigation = useCallback(async () => {
-    await router.push("/");
+  const handleNavigation = useCallback(() => {
+    router.push("/");
   }, [router]);
   useEffect(() => {
     router.refresh(); // URLが変わったらリフレッシュ
-  }, [router]);
+  }, [pathname]);
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
