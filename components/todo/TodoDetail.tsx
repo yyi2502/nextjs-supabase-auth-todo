@@ -21,7 +21,7 @@ const TodoDetail = ({ todo }: TodoDetailProps) => {
       <div className="flex w-full items-center gap-4">
         <TodoCompletedButton id={todo.id} completed={todo.completed} />
 
-        <div className={`flex-1 ${todo.completed ? "line-through" : ""}`}>
+        <div className="flex-1">
           <div className="font-bold text-2xl">{todo.title}</div>
           {todo.content && (
             <div className="leading-relaxed break-words whitespace-pre-wrap mt-4">

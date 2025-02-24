@@ -22,7 +22,7 @@ const TodoItem = ({ todo }: TodoItemProps) => {
       >
         <TodoCompletedButton id={todo.id} completed={todo.completed} />
 
-        <div className={`flex-1 ${todo.completed ? "line-through" : ""}`}>
+        <div className="flex-1">
           <div className="font-bold">{todo.title}</div>
           {todo.content && <StickyNote className="w-4 h-4 text-gray-700" />}
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { changeCompleted } from "@/actions/todo";
 import { Loader2, Square, SquareCheckBig } from "lucide-react";
 import { toast } from "sonner";
@@ -14,9 +14,13 @@ type TodoCompletedButtonProps = {
 const TodoCompletedButton = ({ id, completed }: TodoCompletedButtonProps) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [localCompleted, setLocalCompleted] = useState(completed);
 
   const handleCompleted = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+
+    // UIを即時反映
+    setLocalCompleted((prev) => !prev);
 
     startTransition(async () => {
       try {
@@ -33,6 +37,7 @@ const TodoCompletedButton = ({ id, completed }: TodoCompletedButtonProps) => {
       } catch (error) {
         console.error(error);
         toast.error("エラーが発生しました");
+        setLocalCompleted(completed); // エラー時に元の状態に戻す
       }
     });
   };
@@ -46,7 +51,7 @@ const TodoCompletedButton = ({ id, completed }: TodoCompletedButtonProps) => {
       >
         {isPending ? (
           <Loader2 className="h-5 w-5 animate-spin text-gray-500" />
-        ) : completed ? (
+        ) : localCompleted ? (
           <SquareCheckBig className="w-5 h-5 text-green-700" />
         ) : (
           <Square className="w-5 h-5 text-gray-700" />
