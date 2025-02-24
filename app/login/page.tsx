@@ -25,7 +25,8 @@ export default function Login() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  // const [isPending, startTransition] = useTransition();
+  const [isPending, setIsPending] = useState(false);
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -36,38 +37,40 @@ export default function Login() {
   });
 
   // 送信
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    setIsPending(true);
     setError("");
 
-    startTransition(async () => {
-      try {
-        const res = await login({
-          ...values,
-        });
+    // startTransition(async () => {
+    try {
+      const res = await login({
+        ...values,
+      });
 
-        if (res?.error) {
-          setError(res.error);
-          return;
-        }
-
-        toast.success("ログインしました");
-
-        router.push("/");
-        setTimeout(() => {
-          router.refresh();
-        }, 3000); // 3000ms 後に refresh
-
-        // router.push("/").then(() => {
-        //   router.refresh();
-        // });
-
-        // await router.push("/"); // router.push の完了を待つ
-        // router.refresh(); // ページ遷移完了後にリフレッシュ
-      } catch (error) {
-        console.error(error);
-        setError("エラーが発生しました");
+      if (res?.error) {
+        setError(res.error);
+        return;
       }
-    });
+
+      toast.success("ログインしました");
+
+      setIsPending(false);
+      // router.push("/");
+      // setTimeout(() => {
+      //   router.refresh();
+      // }, 3000); // 3000ms 後に refresh
+
+      // router.push("/").then(() => {
+      //   router.refresh();
+      // });
+
+      await router.push("/"); // router.push の完了を待つ
+      router.refresh(); // ページ遷移完了後にリフレッシュ
+    } catch (error) {
+      console.error(error);
+      setError("エラーが発生しました");
+    }
+    // });
   };
   return (
     <div className="p-5 rounded-xl border">
