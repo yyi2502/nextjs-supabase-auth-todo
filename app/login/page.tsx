@@ -64,8 +64,10 @@ export default function Login() {
       //   router.refresh();
       // });
 
-      await router.push("/"); // router.push の完了を待つ
-      router.refresh(); // ページ遷移完了後にリフレッシュ
+      // router.push("/"); // router.push の完了を待つ
+      // router.refresh(); // ページ遷移完了後にリフレッシュ
+
+      window.location.href = "/"; //強制遷移
     } catch (error) {
       console.error(error);
       setError("エラーが発生しました");
