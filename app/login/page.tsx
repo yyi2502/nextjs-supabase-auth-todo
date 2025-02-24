@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +22,7 @@ import { ChevronRight, EyeIcon, EyeOffIcon, Loader2 } from "lucide-react";
 import FormError from "@/components/auth/FormError";
 
 export default function Login() {
-  const router = useRouter();
+  // const router = useRouter();
   const [error, setError] = useState("");
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   // const [isPending, startTransition] = useTransition();
