@@ -24,7 +24,6 @@ const TodoCompletedButton = ({ id, completed }: TodoCompletedButtonProps) => {
           todoId: id,
           completed: !completed,
         });
-
         if (res?.error) {
           toast.error(res.error);
           return;

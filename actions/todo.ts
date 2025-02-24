@@ -57,11 +57,6 @@ export const editTodo = async (values: editTodoProps) => {
   }
 };
 
-type deleteTodoProps = {
-  todoId: string;
-  // userId: string;
-};
-
 // todo削除
 export const deleteTodo = async (todoId: string) => {
   try {
@@ -108,35 +103,74 @@ export const changeCompleted = async ({
   }
 };
 
-export const getAllTodos = async () => {
+// export const getAllTodos = async () => {
+//   try {
+//     const supabase = await createClient();
+
+//     const { data } = await supabase.auth.getUser();
+//     const userId = data?.user?.id;
+
+//     const { data: todos, error: getAllTodosError } = await supabase
+//       .from("todos")
+//       .select(
+//         `
+//         *,
+//         profiles (
+//           name
+//         )
+//       `
+//       )
+//       .eq("user_id", userId)
+//       .order("updated_at", { ascending: false });
+
+//     // エラーチェック
+//     if (getAllTodosError) {
+//       console.error("getAllTodosError:", getAllTodosError);
+//       return { todos: [], error: getAllTodosError.message };
+//     }
+//     return { todos: todos || [], error: null }; // todosがnullの場合に空配列を返す
+//   } catch (err) {
+//     console.error("getAllTodos catch error:", err);
+//     return { todos: [], error: "エラーが発生しました" };
+//   }
+// };
+
+export const getTodos = async (filter = "all") => {
   try {
     const supabase = await createClient();
 
     const { data } = await supabase.auth.getUser();
     const userId = data?.user?.id;
 
-    const { data: todos, error: getAllTodosError } = await supabase
+    let query = supabase
       .from("todos")
       .select(
         `
         *,
         profiles (
-          name,
-          avatar_url
+          name
         )
       `
       )
       .eq("user_id", userId)
       .order("updated_at", { ascending: false });
 
-    // エラーチェック
-    if (getAllTodosError) {
-      console.error("getAllTodosError:", getAllTodosError);
-      return { todos: [], error: getAllTodosError.message };
+    // フィルタ適用
+    if (filter === "completed") {
+      query = query.eq("completed", true);
+    } else if (filter === "incomplete") {
+      query = query.eq("completed", false);
     }
-    return { todos: todos || [], error: null }; // todosがnullの場合に空配列を返す
+    const { data: todos, error } = await query;
+
+    if (error) {
+      console.error("getAllTodosError:", error);
+      return { todos: [], error: error.message };
+    }
+
+    return { todos: todos || [], error: null };
   } catch (err) {
     console.error("getAllTodos catch error:", err);
-    return { todos: [], error: "データベース接続エラー" };
+    return { todos: [], error: "エラーが発生しました" };
   }
 };

@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { TodoType } from "@/types";
 import { StickyNote } from "lucide-react";
