@@ -1,28 +1,35 @@
 "use client";
-import { Suspense, useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
 import Loading from "./loading";
 import { getTodos } from "@/actions/todo";
 import TodoItem from "@/components/todo/TodoItem";
+import { TodoType } from "@/types";
+
+export type TodosType = TodoType & {
+  profiles: Promise<{
+    name: string;
+  }>;
+};
 
 export default function Home() {
-  const [todos, setTodos] = useState<any[]>([]);
+  const [todos, setTodos] = useState<TodosType[]>([]);
   const [filter, setFilter] = useState("all"); // "all", "completed", "incomplete"
   const [loading, setLoading] = useState(true);
 
   // TODOリストを取得する関数
-  const fetchTodos = async () => {
+  const fetchTodos = useCallback(async () => {
     setLoading(true);
     const { todos, error } = await getTodos(filter);
     if (!error) {
       setTodos(todos);
     }
     setLoading(false);
-  };
+  }, [filter]);
 
   // フィルタ変更時にデータを取得
   useEffect(() => {
     fetchTodos();
-  }, [filter]);
+  }, [fetchTodos]);
 
   return (
     <>

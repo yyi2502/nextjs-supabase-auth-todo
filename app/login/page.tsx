@@ -56,7 +56,6 @@ export default function Login() {
         setTimeout(() => {
           router.refresh();
         }, 100); // 100ms 後に refresh
-        // router.refresh();
       } catch (error) {
         console.error(error);
         setError("エラーが発生しました");
