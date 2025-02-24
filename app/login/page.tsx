@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -37,13 +37,11 @@ export default function Login() {
   });
 
   // useCallbackを使用してメモ化
-  const handleNavigation = useCallback(() => {
-    router.push("/");
-    const timeoutId = setTimeout(() => {
-      router.refresh();
-    }, 500);
-    // クリーンアップ関数を返す
-    return () => clearTimeout(timeoutId);
+  const handleNavigation = useCallback(async () => {
+    await router.push("/");
+  }, [router]);
+  useEffect(() => {
+    router.refresh(); // URLが変わったらリフレッシュ
   }, [router]);
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
