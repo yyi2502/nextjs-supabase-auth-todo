@@ -52,11 +52,20 @@ export default function Login() {
 
         toast.success("ログインしました");
 
+        router.push("/");
+        setTimeout(() => {
+          router.refresh();
+        }, 500); // 500ms 後に refresh
+
+        // router.push("/").then(() => {
+        //   router.refresh();
+        // });
+
         // router.push の完了を待つ
-        await router.push("/");
+        // await router.push("/");
 
         // ページ遷移完了後にリフレッシュ
-        router.refresh();
+        // router.refresh();
       } catch (error) {
         console.error(error);
         setError("エラーが発生しました");
