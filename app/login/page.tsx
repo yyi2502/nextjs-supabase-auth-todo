@@ -55,17 +55,14 @@ export default function Login() {
         router.push("/");
         setTimeout(() => {
           router.refresh();
-        }, 500); // 500ms 後に refresh
+        }, 3000); // 3000ms 後に refresh
 
         // router.push("/").then(() => {
         //   router.refresh();
         // });
 
-        // router.push の完了を待つ
-        // await router.push("/");
-
-        // ページ遷移完了後にリフレッシュ
-        // router.refresh();
+        // await router.push("/"); // router.push の完了を待つ
+        // router.refresh(); // ページ遷移完了後にリフレッシュ
       } catch (error) {
         console.error(error);
         setError("エラーが発生しました");
