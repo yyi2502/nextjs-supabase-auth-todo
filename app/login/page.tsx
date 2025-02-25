@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useCallback, useEffect, useState, useTransition } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +26,6 @@ export default function Login() {
   const [error, setError] = useState("");
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const [isPending, startTransition] = useTransition();
-  // const [isPending, setIsPending] = useState(false);
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -35,15 +34,6 @@ export default function Login() {
       password: "",
     },
   });
-
-  const pathname = usePathname(); // 現在のパスを取得
-  // useCallbackを使用してメモ化
-  const handleNavigation = useCallback(() => {
-    router.push("/");
-  }, [router]);
-  useEffect(() => {
-    router.refresh(); // URLが変わったらリフレッシュ
-  }, [pathname]);
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     setError("");
@@ -57,7 +47,7 @@ export default function Login() {
           return;
         }
         toast.success("ログインしました");
-        handleNavigation();
+        router.refresh();
       } catch (error) {
         console.error(error);
         setError("エラーが発生しました");
